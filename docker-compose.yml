@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: yojanaai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: yojanaai
+      POSTGRES_PASSWORD: yojanaai_dev_password
+      POSTGRES_DB: yojanaai
+    ports:
+      - "5432:5432"
+    volumes:
+      - yojanaai_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yojanaai -d yojanaai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  yojanaai_postgres_data:
+
+# Only PostgreSQL is containerized here. The backend (FastAPI) runs
+# natively on the host — see backend/README.md — and connects to this
+# container using DATABASE_URL from backend/.env, e.g.:
+#
+#   DATABASE_URL=postgresql+psycopg2://yojanaai:yojanaai_dev_password@localhost:5432/yojanaai
+#
+# Usage:
+#   docker compose up -d          # start Postgres
+#   docker compose down           # stop it (data persists in the named volume)
+#   docker compose down -v        # stop it AND delete the data volume

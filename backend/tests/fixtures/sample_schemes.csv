@@ -1,0 +1,8 @@
+slug,name,description,ministry,department,state,category,beneficiary_type,benefits,eligibility_text,application_process,documents_required,apply_url,official_url,eligibility_age_min,eligibility_age_max,eligibility_gender,eligibility_caste,eligibility_income_max,eligibility_residence,eligibility_state,eligibility_disability,eligibility_bpl,scraped_at
+tst-001,Sample Merit Scholarship,Financial support for undergraduate students from lower-income households.,Ministry of Education,null,Central,Education & Learning,Individual,Rs 50000 per year paid in two installments.,Undergraduate students from families with annual income under the threshold. Applicant must not already hold another central scholarship.,"Step 1: Register on portal
+Step 2: Upload documents
+Step 3: Submit before deadline","Aadhaar card
+Income certificate
+College ID",https://example.gov.in/apply/tst-001,https://www.myscheme.gov.in/schemes/tst-001,18,25,all,[],300000,both,"[""All""]",false,false,2026-07-05 09:29:07.923+00
+tst-002,Sample Farmer Support Grant,Direct income support for small farmers in Tamil Nadu.,Department of Agriculture,Agriculture Department,Tamil Nadu,"Agriculture,Rural & Environment",Individual,Rs 6000 per year in three installments.,Small and marginal farmer families with cultivable landholding in Tamil Nadu.,null,null,null,https://www.myscheme.gov.in/schemes/tst-002,null,null,all,[],null,rural,"[""Tamil Nadu""]",false,false,2026-07-05 09:30:00.000+00
+tst-003,,null,null,null,null,null,null,null,null,null,null,null,null,null,null,all,[],null,both,"[""All""]",false,false,2026-07-05 09:31:00.000+00

@@ -1,0 +1,23 @@
+# Render Blueprint for the YojanaAI FastAPI backend.
+# Secrets (DATABASE_URL, CORS_ORIGINS) are entered in the Render dashboard
+# (sync: false) — never committed here.
+services:
+  - type: web
+    name: yojanaai-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true

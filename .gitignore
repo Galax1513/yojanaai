@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.local
+npm-debug.log*
+venv/
+.venv/
+__pycache__/
+*.pyc
+.vercel
+*.csv
+!backend/tests/fixtures/*.csv
