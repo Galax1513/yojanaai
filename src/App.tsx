@@ -12,22 +12,30 @@ import { LoginPage } from "@/pages/LoginPage"
 import { PrivacyPage } from "@/pages/PrivacyPage"
 import { TermsPage } from "@/pages/TermsPage"
 import { RequireAuth } from "@/components/auth/RequireAuth"
+import { AppBackdrop } from "@/components/common/AppBackdrop"
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   useEffect(() => {
-    // "instant" overrides the global `scroll-behavior: smooth` in
-    // index.css, so a new page opens at the top rather than visibly
-    // scrolling up from wherever the previous page was (e.g. a footer
-    // link). In-page anchor links keep the smooth behaviour.
+    // A link like /#categories lands on its section once the page has
+    // rendered; otherwise a new page opens at the top. "instant"
+    // overrides the global `scroll-behavior: smooth` so the page doesn't
+    // visibly scroll up from wherever the previous one was.
+    if (hash) {
+      const handle = requestAnimationFrame(() => {
+        document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" })
+      })
+      return () => cancelAnimationFrame(handle)
+    }
     window.scrollTo({ top: 0, left: 0, behavior: "instant" })
-  }, [pathname])
+  }, [pathname, hash])
   return null
 }
 
 function App() {
   return (
-    <div className="min-h-screen bg-canvas">
+    <div className="relative min-h-screen text-fg">
+      <AppBackdrop />
       <ScrollToTop />
       <Navbar />
       <main>

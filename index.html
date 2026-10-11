@@ -3,9 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="YojanaAI is an independent tool to discover Indian government schemes and scholarships you may be eligible for, based on the information you provide." />
+    <meta name="theme-color" content="#f3efe5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#13110c" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>YojanaAI — Find schemes you may be eligible for</title>
+    <script>
+      // Apply the saved (or system) theme before first paint so the page
+      // never flashes the wrong colours. Kept in sync with ThemeContext.
+      (function () {
+        var theme
+        try {
+          theme = localStorage.getItem("yojanaai.theme")
+        } catch (e) {}
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+        }
+        document.documentElement.dataset.theme = theme
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

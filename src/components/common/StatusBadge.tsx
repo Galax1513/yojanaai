@@ -1,20 +1,22 @@
 import { cn } from "@/lib/utils"
-import { Check, Clock, X, AlertTriangle } from "lucide-react"
+import { Check, HelpCircle, X, Info } from "lucide-react"
 
-export type BadgeTone = "positive" | "potential" | "negative" | "neutral"
+export type BadgeTone = "positive" | "potential" | "negative" | "neutral" | "notice"
 
 const toneStyles: Record<BadgeTone, string> = {
-  positive: "bg-moss/15 text-moss-soft border-moss/30",
-  potential: "bg-marigold/15 text-marigold border-marigold/30",
-  negative: "bg-rose/15 text-rose border-rose/30",
-  neutral: "bg-mist/10 text-mist border-mist/25",
+  positive: "bg-sage/15 text-sage-ink",
+  potential: "bg-clay/20 text-clay-ink",
+  negative: "bg-rose/20 text-rose-ink",
+  neutral: "bg-fg/[0.06] text-muted",
+  notice: "bg-tour/15 text-tour-ink",
 }
 
 const toneIcon: Record<BadgeTone, React.ReactNode> = {
-  positive: <Check className="size-3" />,
-  potential: <Clock className="size-3" />,
-  negative: <X className="size-3" />,
-  neutral: <AlertTriangle className="size-3" />,
+  positive: <Check className="size-3" strokeWidth={2.5} />,
+  potential: <HelpCircle className="size-3" strokeWidth={2.25} />,
+  negative: <X className="size-3" strokeWidth={2.5} />,
+  neutral: null,
+  notice: <Info className="size-3" strokeWidth={2.25} />,
 }
 
 interface StatusBadgeProps {
@@ -28,7 +30,7 @@ export function StatusBadge({ tone, children, className, withIcon = true }: Stat
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium",
         toneStyles[tone],
         className
       )}

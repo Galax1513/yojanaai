@@ -52,7 +52,7 @@ export function SearchableCombobox({
 
   return (
     <div className="relative" ref={rootRef}>
-      <label htmlFor={inputId} className="text-sm text-mist">
+      <label htmlFor={inputId} className="label-micro">
         {label}
       </label>
       <button
@@ -61,37 +61,37 @@ export function SearchableCombobox({
         disabled={disabled}
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "mt-2 flex h-11 w-full items-center justify-between rounded-md border bg-canvas px-4 text-left text-sm transition-colors focus:outline-none",
+          "mt-2.5 flex h-12 w-full items-center justify-between rounded-2xl border bg-field px-4 text-left text-[15px] transition-[border-color,box-shadow] focus:outline-none",
           disabled
-            ? "cursor-not-allowed border-canvas-line text-mist/50"
-            : "border-canvas-line text-sand hover:border-sand/30",
-          error && "border-rose/60",
-          open && "border-terracotta/50"
+            ? "cursor-not-allowed border-line text-subtle"
+            : "border-line text-fg hover:border-line-strong",
+          error && "border-rose-ink/50",
+          open && "border-accent-strong ring-4 ring-accent/25"
         )}
       >
-        <span className={value ? "text-sand" : "text-mist/60"}>
+        <span className={cn("truncate", value ? "text-fg" : "text-subtle")}>
           {value || (disabled ? disabledHint ?? placeholder : placeholder)}
         </span>
-        <ChevronDown className={cn("size-4 text-mist transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("size-4 shrink-0 text-muted transition-transform", open && "rotate-180")} />
       </button>
 
-      {error && <p className="mt-1.5 text-xs text-rose">{error}</p>}
+      {error && <p className="mt-2 text-xs text-rose-ink">{error}</p>}
 
       {open && !disabled && (
-        <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-md border border-canvas-line bg-canvas-raised shadow-xl">
-          <div className="flex items-center gap-2 border-b border-canvas-line px-3">
-            <Search className="size-3.5 shrink-0 text-mist" />
+        <div className="glass-strong absolute z-30 mt-2 w-full overflow-hidden rounded-2xl">
+          <div className="flex items-center gap-2 border-b border-line px-4">
+            <Search className="size-3.5 shrink-0 text-muted" />
             <input
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={`Search ${label.toLowerCase()}`}
-              className="h-10 w-full bg-transparent text-sm text-sand placeholder:text-mist/60 focus:outline-none"
+              className="h-11 w-full bg-transparent text-sm text-fg placeholder:text-subtle focus:outline-none"
             />
           </div>
-          <ul className="max-h-56 overflow-y-auto py-1" role="listbox">
+          <ul className="max-h-60 overflow-y-auto p-1.5" role="listbox">
             {filtered.length === 0 && (
-              <li className="px-4 py-3 text-sm text-mist">No matches</li>
+              <li className="px-3 py-3 text-sm text-muted">No matches</li>
             )}
             {filtered.map((option) => (
               <li key={option}>
@@ -104,10 +104,10 @@ export function SearchableCombobox({
                     setOpen(false)
                     setQuery("")
                   }}
-                  className="flex w-full items-center justify-between px-4 py-2 text-left text-sm text-sand transition-colors hover:bg-canvas"
+                  className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm text-fg transition-colors hover:bg-fg/[0.06]"
                 >
                   {option}
-                  {value === option && <Check className="size-3.5 text-terracotta-soft" />}
+                  {value === option && <Check className="size-3.5 text-accent-ink" />}
                 </button>
               </li>
             ))}

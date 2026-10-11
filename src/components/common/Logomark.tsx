@@ -4,12 +4,9 @@ interface LogomarkProps {
 }
 
 /**
- * Original abstract mark for YojanaAI.
- *
- * Concept: a rising sun over a winding path, cradled by a leaf-like arc —
- * discovery (sun), a route forward (path), and everyday life / nature
- * (leaf). Deliberately avoids the Indian tricolour, government seals,
- * domes or any state-affiliation imagery.
+ * Original abstract mark for YojanaAI: a low sun resting on two dune
+ * lines — a route forward through open ground. Drawn in the theme's
+ * own colours; deliberately no tricolour, seals or state imagery.
  */
 export function Logomark({ className, size = 28 }: LogomarkProps) {
   return (
@@ -22,22 +19,22 @@ export function Logomark({ className, size = 28 }: LogomarkProps) {
       className={className}
       aria-hidden="true"
     >
-      <path
-        d="M4 30c5-9 11-13 16-13s11 4 16 13"
-        stroke="var(--color-moss, #55663f)"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <circle cx="20" cy="17" r="7" fill="var(--color-terracotta, #c1552b)" />
-      <path
-        d="M6 31c4.5-2.5 9-3.6 14-3.6s9.5 1.1 14 3.6"
-        stroke="var(--color-marigold, #d5a03e)"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        fill="none"
-        opacity="0.85"
-      />
+      <rect width="40" height="40" rx="12" fill="var(--primary)" />
+      <circle cx="20" cy="18" r="6" fill="var(--accent)" />
+      <path d="M7 27c4.5-3.2 8.8-4.8 13-4.8S28.5 23.8 33 27" stroke="var(--on-primary)" strokeWidth="2" strokeLinecap="round" />
+      <path d="M11 31.5c3-1.6 6-2.4 9-2.4s6 .8 9 2.4" stroke="var(--on-primary)" strokeOpacity="0.55" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
+  )
+}
+
+/** Logomark plus the "YojanaAI" wordmark. */
+export function Wordmark({ size = 30, className }: { size?: number; className?: string }) {
+  return (
+    <span className={className ? `flex items-center gap-2.5 ${className}` : "flex items-center gap-2.5"}>
+      <Logomark size={size} />
+      <span className="font-display text-[1.15rem] font-semibold tracking-[-0.02em] text-fg">
+        Yojana<span className="font-normal text-muted">AI</span>
+      </span>
+    </span>
   )
 }

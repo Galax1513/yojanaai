@@ -107,9 +107,19 @@ official scheme website before applying.
 
 ## Design system
 
-- **Palette**: deep charcoal canvas, dusty sand, burnt terracotta,
-  moss green, marigold — warm and earthy, with no government seals,
-  tricolour, or state emblems anywhere in the product.
-- **Type**: Fraunces (display/serif) + Manrope (UI sans).
-- **Motion**: a subtle parallax on the hero image and light
+- **Themes**: light (ivory and sand) and dark (night sands), switchable
+  from the navbar and remembered per browser; defaults to the system
+  setting. All colours are semantic tokens in `src/index.css`, so
+  components never hard-code a theme.
+- **Palette**: built around sand `#CBBD93`, with olive-espresso shades
+  and ivory tints. Muted accents only: sage for potential matches, clay
+  for "more information needed", tourmaline blue-grey for notices. No
+  government seals, tricolour, or state emblems.
+- **Surfaces**: frosted glass panels (`glass`, `glass-strong`,
+  `glass-photo` utilities) over a soft, static colour-wash backdrop.
+- **Type**: Urbanist (display) + DM Sans (UI), with small tracked
+  uppercase labels (`label-micro`).
+- **Components**: pill buttons and chips, round icon buttons, a floating
+  glass navbar, and a glass bottom dock on phones.
+- **Motion**: a subtle parallax on the hero photo and light
   scroll-reveals; `prefers-reduced-motion` is respected globally.

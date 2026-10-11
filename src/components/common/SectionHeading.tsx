@@ -3,9 +3,10 @@ import { cn } from "@/lib/utils"
 interface SectionHeadingProps {
   kicker?: string
   title: React.ReactNode
-  description?: string
+  description?: React.ReactNode
   align?: "left" | "center"
-  tone?: "light" | "dark"
+  /** Heading level — pages use h1 for their main title. */
+  as?: "h1" | "h2"
   className?: string
 }
 
@@ -14,44 +15,22 @@ export function SectionHeading({
   title,
   description,
   align = "left",
-  tone = "light",
+  as: Tag = "h2",
   className,
 }: SectionHeadingProps) {
   return (
-    <div
-      className={cn(
-        "max-w-2xl",
-        align === "center" && "mx-auto text-center",
-        className
-      )}
-    >
-      {kicker && (
-        <p
-          className={cn(
-            "mb-3 text-sm font-medium",
-            tone === "light" ? "text-terracotta" : "text-terracotta-soft"
-          )}
-        >
-          {kicker}
-        </p>
-      )}
-      <h2
+    <div className={cn("max-w-2xl", align === "center" && "mx-auto text-center", className)}>
+      {kicker && <p className="label-micro mb-4 text-accent-ink">{kicker}</p>}
+      <Tag
         className={cn(
-          "font-display text-balance text-3xl font-normal leading-[1.15] sm:text-4xl md:text-[2.75rem]",
-          tone === "light" ? "text-ink" : "text-sand"
+          "text-balance font-light leading-[1.05] text-fg",
+          Tag === "h1" ? "text-[2.6rem] sm:text-6xl" : "text-[2.15rem] sm:text-5xl"
         )}
       >
         {title}
-      </h2>
+      </Tag>
       {description && (
-        <p
-          className={cn(
-            "mt-4 text-base leading-relaxed",
-            tone === "light" ? "text-ink-soft" : "text-mist"
-          )}
-        >
-          {description}
-        </p>
+        <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-muted sm:text-base">{description}</p>
       )}
     </div>
   )

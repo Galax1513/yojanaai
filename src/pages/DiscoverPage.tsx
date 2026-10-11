@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { Search, FlaskConical, AlertTriangle, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { Search, AlertTriangle, ChevronDown, Loader2 } from "lucide-react"
 import { PageTransition } from "@/components/common/PageTransition"
 import { SectionHeading } from "@/components/common/SectionHeading"
 import { SchemeCard } from "@/components/scheme/SchemeCard"
 import { SupportCategorySelector } from "@/components/scheme/SupportCategorySelector"
 import { EmptyState } from "@/components/common/EmptyState"
-import { Button } from "@/components/ui/button"
+import { GlassCard } from "@/components/common/GlassCard"
+import { StatusBadge } from "@/components/common/StatusBadge"
+import { Pagination } from "@/components/common/Pagination"
+import { SchemeCardSkeleton } from "@/components/common/LoadingSkeleton"
+import { cn } from "@/lib/utils"
 import { getSchemes } from "@/services/api/schemes"
 import { ApiError } from "@/services/api/client"
 import { indianStates } from "@/data/statesAndDistricts"
@@ -148,26 +152,57 @@ export function DiscoverPage() {
 
   return (
     <PageTransition>
-      <div className="min-h-screen pb-28 pt-36 sm:pt-40">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="min-h-screen px-3 pb-16 pt-32 sm:px-5 sm:pt-36">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
+              as="h1"
               kicker="Discover"
-              title="Explore government schemes"
-              description="Browse schemes by category, eligibility requirements, and benefit type — no account required."
-              tone="dark"
+              title="Explore schemes"
+              description="Browse central and state schemes by category, eligibility requirements, and benefit type. No account required."
             />
             {CATALOG_IS_DEVELOPMENT_DATA && (
-              <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 rounded-md border border-marigold/30 bg-marigold/10 px-3 py-1.5 text-xs font-medium text-marigold">
-                <FlaskConical className="size-3.5" />
+              <StatusBadge tone="notice" className="w-fit shrink-0">
                 Development data — not verified government records
-              </span>
+              </StatusBadge>
             )}
           </div>
 
+          <GlassCard className="mt-10 flex flex-col gap-2 p-2 lg:flex-row lg:items-center lg:rounded-full">
+            <label className="relative flex-1">
+              <span className="sr-only">Search schemes</span>
+              <Search className="pointer-events-none absolute left-4 top-1/2 size-[18px] -translate-y-1/2 text-muted" />
+              <input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search by name, benefit or keyword"
+                className="h-12 w-full rounded-full border border-transparent bg-field pl-12 pr-4 text-[15px] text-fg placeholder:text-subtle focus:border-accent-strong focus:outline-none focus:ring-4 focus:ring-accent/25"
+              />
+            </label>
+            <div className="no-scrollbar flex gap-2 overflow-x-auto">
+              <PillSelect label="Scheme type" value={typeParam} onChange={(v) => setParam("type", v)}>
+                <option value="all">Any type</option>
+                {(Object.keys(schemeTypeLabels) as ApiSchemeType[]).map((t) => (
+                  <option key={t} value={t}>{schemeTypeLabels[t]}</option>
+                ))}
+              </PillSelect>
+              <PillSelect label="State" value={stateParam} onChange={(v) => setParam("state", v)}>
+                <option value="all">All states</option>
+                {indianStates.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </PillSelect>
+              <PillSelect label="Income limit" value={incomeParam} onChange={(v) => setParam("income", v)}>
+                {incomeRanges.map((r) => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </PillSelect>
+            </div>
+          </GlassCard>
+
           {taxonomy && (
             <SupportCategorySelector
-              className="mt-10"
+              className="mt-4"
               taxonomy={taxonomy}
               facets={facets}
               unfilteredTotal={unfilteredTotal}
@@ -179,60 +214,21 @@ export function DiscoverPage() {
             />
           )}
 
-          <div className="mt-8 flex flex-col gap-4">
-            <div className="relative max-w-sm">
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-mist" />
-              <input
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search schemes"
-                className="h-11 w-full rounded-md border border-canvas-line bg-canvas-raised pl-10 pr-4 text-sm text-sand placeholder:text-mist focus:border-terracotta/50 focus:outline-none"
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <select
-                value={typeParam}
-                onChange={(e) => setParam("type", e.target.value)}
-                className="h-10 rounded-md border border-canvas-line bg-canvas-raised px-3 text-xs text-sand focus:border-terracotta/50 focus:outline-none"
-              >
-                <option value="all">Any scheme type</option>
-                {(Object.keys(schemeTypeLabels) as ApiSchemeType[]).map((t) => (
-                  <option key={t} value={t}>{schemeTypeLabels[t]}</option>
-                ))}
-              </select>
-
-              <select
-                value={stateParam}
-                onChange={(e) => setParam("state", e.target.value)}
-                className="h-10 rounded-md border border-canvas-line bg-canvas-raised px-3 text-xs text-sand focus:border-terracotta/50 focus:outline-none"
-              >
-                <option value="all">All states</option>
-                {indianStates.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-
-              <select
-                value={incomeParam}
-                onChange={(e) => setParam("income", e.target.value)}
-                className="h-10 rounded-md border border-canvas-line bg-canvas-raised px-3 text-xs text-sand focus:border-terracotta/50 focus:outline-none"
-              >
-                {incomeRanges.map((r) => (
-                  <option key={r.value} value={r.value}>{r.label}</option>
-                ))}
-              </select>
-            </div>
-
-            <p className="text-xs text-mist">
-              {loading ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <Loader2 className="size-3 animate-spin" /> Loading schemes…
-                </span>
-              ) : (
-                !error && `${total.toLocaleString("en-IN")} scheme${total === 1 ? "" : "s"} found`
-              )}
-            </p>
+          <div className="mt-12 flex min-h-12 items-end justify-between gap-4" aria-live="polite">
+            {loading ? (
+              <p className="inline-flex items-center gap-2 text-sm text-muted">
+                <Loader2 className="size-4 animate-spin" /> Loading schemes…
+              </p>
+            ) : (
+              !error && (
+                <p className="flex items-baseline gap-2.5">
+                  <span className="font-display text-4xl font-light tracking-[-0.03em] text-fg sm:text-5xl">
+                    {total.toLocaleString("en-IN")}
+                  </span>
+                  <span className="text-sm text-muted">scheme{total === 1 ? "" : "s"} found</span>
+                </p>
+              )
+            )}
           </div>
 
           <div className="mt-6">
@@ -249,46 +245,24 @@ export function DiscoverPage() {
                 }
               />
             ) : loading ? (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-56 animate-pulse rounded-md border border-canvas-line bg-canvas-raised/40" />
+                  <SchemeCardSkeleton key={i} />
                 ))}
               </div>
             ) : items.length > 0 ? (
               <>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((scheme) => (
                     <SchemeCard key={scheme.id} scheme={scheme} />
                   ))}
                 </div>
-
-                {totalPages > 1 && (
-                  <div className="mt-10 flex items-center justify-center gap-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={currentPage <= 1}
-                      onClick={() => goToOffset(Math.max(0, offset - PAGE_SIZE))}
-                      className="gap-1.5"
-                    >
-                      <ChevronLeft className="size-3.5" />
-                      Previous
-                    </Button>
-                    <span className="text-xs text-mist">
-                      Page {currentPage} of {totalPages.toLocaleString("en-IN")}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={currentPage >= totalPages}
-                      onClick={() => goToOffset(offset + PAGE_SIZE)}
-                      className="gap-1.5"
-                    >
-                      Next
-                      <ChevronRight className="size-3.5" />
-                    </Button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPrevious={() => goToOffset(Math.max(0, offset - PAGE_SIZE))}
+                  onNext={() => goToOffset(offset + PAGE_SIZE)}
+                />
               </>
             ) : (
               <EmptyState
@@ -303,5 +277,34 @@ export function DiscoverPage() {
         </div>
       </div>
     </PageTransition>
+  )
+}
+
+function PillSelect({
+  label,
+  value,
+  onChange,
+  children,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  children: React.ReactNode
+}) {
+  return (
+    <label className="relative shrink-0">
+      <span className="sr-only">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={cn(
+          "h-12 max-w-56 appearance-none truncate rounded-full border bg-field pl-4 pr-10 text-sm text-fg focus:border-accent-strong focus:outline-none focus:ring-4 focus:ring-accent/25",
+          value !== "all" ? "border-accent-strong" : "border-transparent"
+        )}
+      >
+        {children}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted" />
+    </label>
   )
 }

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react"
 import { useSearchParams, Link } from "react-router-dom"
-import { AlertTriangle, ChevronLeft, ChevronRight, Loader2, Pencil, UserPlus, Search } from "lucide-react"
+import { AlertTriangle, Pencil, UserPlus, Search } from "lucide-react"
 import { PageTransition } from "@/components/common/PageTransition"
 import { SectionHeading } from "@/components/common/SectionHeading"
 import { EmptyState } from "@/components/common/EmptyState"
 import { EligibilityMatchCard } from "@/components/scheme/EligibilityMatchCard"
 import { SupportCategorySelector } from "@/components/scheme/SupportCategorySelector"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { GlassCard } from "@/components/common/GlassCard"
+import { Pagination } from "@/components/common/Pagination"
+import { LoadingSkeleton, SchemeCardSkeleton } from "@/components/common/LoadingSkeleton"
+import { cn } from "@/lib/utils"
 import { getProfile } from "@/services/api/profiles"
 import { useAuth } from "@/contexts/AuthContext"
 import { getProfileMatches } from "@/services/api/eligibility"
@@ -37,16 +40,16 @@ function profileSummaryRows(profile: ApiProfile): [string, string][] {
 
 function NoProfileState() {
   return (
-    <div className="min-h-screen pb-28 pt-36 sm:pt-40">
-      <div className="mx-auto max-w-3xl px-5 sm:px-8">
-        <SectionHeading kicker="Your matches" title="Your benefit matches" tone="dark" />
+    <div className="min-h-screen px-3 pb-16 pt-32 sm:px-5 sm:pt-36">
+      <div className="mx-auto max-w-3xl">
+        <SectionHeading as="h1" kicker="Your matches" title="Your benefit matches" />
         <div className="mt-10">
           <EmptyState
             icon={UserPlus}
             title="Build a profile to see personalized matches"
             description="Your matches are based on the information in your profile — we don't have one for you yet. It only takes a few minutes."
             actionLabel="Find My Benefits"
-            onAction={() => { window.location.href = "/onboarding" }}
+            actionTo="/onboarding"
           />
         </div>
       </div>
@@ -158,45 +161,81 @@ export function ResultsPage() {
   const matchItems = items.filter((i) => i.status === "MATCH")
   const needsInfoItems = items.filter((i) => i.status === "NEEDS_INFORMATION")
 
+  const summaryRows = profile ? profileSummaryRows(profile) : []
+
   return (
     <PageTransition>
-      <div className="min-h-screen pb-28 pt-36 sm:pt-40">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-end">
-            <SectionHeading
-              kicker="Your matches"
-              title="Your benefit matches"
-              description="Based on the information in your profile."
-              tone="dark"
-            />
-            <Link
-              to={`/onboarding?profile=${profileId}`}
-              className={buttonVariants({ variant: "outline", size: "sm" }) + " gap-1.5"}
-            >
-              <Pencil className="size-3.5" />
-              Edit profile
-            </Link>
-          </div>
-
-          {profile && profileSummaryRows(profile).length > 0 && (
-            <GlassCard className="mt-8 p-5">
-              <p className="text-xs font-medium uppercase tracking-wide text-mist">Your profile</p>
-              <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-4">
-                {profileSummaryRows(profile).map(([label, value]) => (
-                  <div key={label}>
-                    <dt className="text-xs text-mist">{label}</dt>
-                    <dd className="mt-0.5 text-sm text-sand">{value}</dd>
-                  </div>
-                ))}
-              </dl>
+      <div className="min-h-screen px-3 pb-16 pt-32 sm:px-5 sm:pt-36">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
+            <GlassCard className="flex flex-col justify-between p-7 sm:p-9">
+              <div>
+                <p className="label-micro text-accent-ink">Your matches</p>
+                <h1 className="mt-3 text-4xl font-light leading-[1.05] text-fg sm:text-5xl">
+                  {profile?.name ? `Hello, ${profile.name.split(" ")[0]}` : "Your benefit matches"}
+                </h1>
+                <p className="mt-3 text-sm text-muted">Based on the information in your profile.</p>
+              </div>
+              <div className="mt-10 flex items-end justify-between gap-4">
+                <div aria-live="polite">
+                  {unfilteredTotal !== null ? (
+                    <>
+                      <p className="font-display text-6xl font-light leading-none tracking-[-0.04em] text-fg sm:text-7xl">
+                        {unfilteredTotal.toLocaleString("en-IN")}
+                      </p>
+                      <p className="mt-2 text-sm text-muted">
+                        potential match{unfilteredTotal === 1 ? "" : "es"} across all support
+                      </p>
+                    </>
+                  ) : error ? (
+                    <p className="text-sm text-muted">Match count unavailable</p>
+                  ) : (
+                    <LoadingSkeleton className="h-14 w-32" />
+                  )}
+                </div>
+                <Link
+                  to={`/onboarding?profile=${profileId}`}
+                  className={buttonVariants({ variant: "outline", size: "sm", className: "h-10" })}
+                >
+                  <Pencil className="size-3.5" />
+                  Edit profile
+                </Link>
+              </div>
             </GlassCard>
-          )}
+
+            <GlassCard className="p-7 sm:p-9">
+              <p className="label-micro">Your profile</p>
+              {summaryRows.length > 0 ? (
+                <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-3">
+                  {summaryRows.map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="label-micro">{label}</dt>
+                      <dd className="mt-1.5 text-[15px] text-fg">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i}>
+                      <LoadingSkeleton className="h-2.5 w-16" />
+                      <LoadingSkeleton className="mt-3 h-4 w-24" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="mt-8 border-t border-line pt-5 text-xs leading-relaxed text-muted">
+                Results are potential matches only, based on the details you provided. Always confirm
+                eligibility on the official scheme website before applying.
+              </p>
+            </GlassCard>
+          </div>
 
           {/* Shown once the person has any potential matches at all; it
               stays mounted across reloads so the layout doesn't jump. */}
           {taxonomy && unfilteredTotal !== null && unfilteredTotal > 0 && (
             <SupportCategorySelector
-              className="mt-6"
+              className="mt-4"
               taxonomy={taxonomy}
               facets={facets}
               unfilteredTotal={unfilteredTotal}
@@ -208,11 +247,12 @@ export function ResultsPage() {
             />
           )}
 
-          <div className="mt-8">
+          <div className="mt-12">
             {loading ? (
-              <div className="flex items-center gap-2 text-sm text-mist">
-                <Loader2 className="size-4 animate-spin" />
-                Loading your matches…
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SchemeCardSkeleton key={i} />
+                ))}
               </div>
             ) : error ? (
               <EmptyState
@@ -235,74 +275,89 @@ export function ResultsPage() {
                 icon={Search}
                 title="No potential matches yet"
                 description="We couldn't find any schemes that match the information in your profile so far. Adding more details may help — or browse the full catalog yourself."
-                actionLabel="Explore Schemes"
-                onAction={() => { window.location.href = "/discover" }}
+                actionLabel="Explore schemes"
+                actionTo="/discover"
               />
             ) : (
               <>
-                <p className="text-xs text-mist">
-                  {total.toLocaleString("en-IN")} potential match{total === 1 ? "" : "es"}
-                  {selectedLabel && unfilteredTotal !== null && (
-                    <> in {selectedLabel} · {unfilteredTotal.toLocaleString("en-IN")} across all support</>
-                  )}
-                </p>
+                {selectedLabel && (
+                  <p className="mb-8 text-sm text-muted">
+                    <span className="font-medium text-fg">{total.toLocaleString("en-IN")}</span> potential match
+                    {total === 1 ? "" : "es"} in {selectedLabel}
+                  </p>
+                )}
 
-                <div className="mt-6 space-y-16">
+                <div className="space-y-16">
                   {matchItems.length > 0 && (
-                    <div>
-                      <h3 className="font-display text-2xl text-sand">Potential matches</h3>
-                      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {matchItems.map((result) => (
-                          <EligibilityMatchCard key={result.scheme_id} result={result} />
-                        ))}
-                      </div>
-                    </div>
+                    <ResultGroup
+                      title="Potential matches"
+                      description="These appear to meet the requirements we could check."
+                      tone="match"
+                      count={matchItems.length}
+                    >
+                      {matchItems.map((result) => (
+                        <EligibilityMatchCard key={result.scheme_id} result={result} />
+                      ))}
+                    </ResultGroup>
                   )}
 
                   {needsInfoItems.length > 0 && (
-                    <div>
-                      <h3 className="font-display text-2xl text-sand">Need more information</h3>
-                      <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {needsInfoItems.map((result) => (
-                          <EligibilityMatchCard key={result.scheme_id} result={result} />
-                        ))}
-                      </div>
-                    </div>
+                    <ResultGroup
+                      title="May be eligible"
+                      description="Some requirements need details your profile doesn't have yet."
+                      tone="info"
+                      count={needsInfoItems.length}
+                    >
+                      {needsInfoItems.map((result) => (
+                        <EligibilityMatchCard key={result.scheme_id} result={result} />
+                      ))}
+                    </ResultGroup>
                   )}
                 </div>
 
-                {totalPages > 1 && (
-                  <div className="mt-10 flex items-center justify-center gap-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={currentPage <= 1}
-                      onClick={() => goToOffset(Math.max(0, offset - PAGE_SIZE))}
-                      className="gap-1.5"
-                    >
-                      <ChevronLeft className="size-3.5" />
-                      Previous
-                    </Button>
-                    <span className="text-xs text-mist">
-                      Page {currentPage} of {totalPages.toLocaleString("en-IN")}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={currentPage >= totalPages}
-                      onClick={() => goToOffset(offset + PAGE_SIZE)}
-                      className="gap-1.5"
-                    >
-                      Next
-                      <ChevronRight className="size-3.5" />
-                    </Button>
-                  </div>
-                )}
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPrevious={() => goToOffset(Math.max(0, offset - PAGE_SIZE))}
+                  onNext={() => goToOffset(offset + PAGE_SIZE)}
+                />
               </>
             )}
           </div>
         </div>
       </div>
     </PageTransition>
+  )
+}
+
+function ResultGroup({
+  title,
+  description,
+  tone,
+  count,
+  children,
+}: {
+  title: string
+  description: string
+  tone: "match" | "info"
+  count: number
+  children: React.ReactNode
+}) {
+  return (
+    <section>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <h2 className="flex items-center gap-3 text-3xl font-normal text-fg">
+            <span className={cn("size-2.5 rounded-full", tone === "match" ? "bg-sage" : "bg-clay")} />
+            {title}
+          </h2>
+          <p className="mt-2 text-sm text-muted">{description}</p>
+        </div>
+        <span className="shrink-0 text-sm text-muted">
+          {count} on this page
+        </span>
+      </div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>
+    </section>
   )
 }

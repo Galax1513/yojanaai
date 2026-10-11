@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface FieldWrapperProps {
@@ -10,17 +11,17 @@ interface FieldWrapperProps {
 function FieldWrapper({ label, error, children, className }: FieldWrapperProps) {
   return (
     <label className={cn("block", className)}>
-      <span className="text-sm text-mist">{label}</span>
-      <div className="mt-2">{children}</div>
-      {error && <p className="mt-1.5 text-xs text-rose">{error}</p>}
+      <span className="label-micro">{label}</span>
+      <div className="mt-2.5">{children}</div>
+      {error && <p className="mt-2 text-xs text-rose-ink">{error}</p>}
     </label>
   )
 }
 
 const inputClass = (hasError?: boolean) =>
   cn(
-    "h-11 w-full rounded-md border bg-canvas px-4 text-sm text-sand placeholder:text-mist/60 focus:outline-none",
-    hasError ? "border-rose/60" : "border-canvas-line focus:border-terracotta/50"
+    "h-12 w-full rounded-2xl border bg-field px-4 text-[15px] text-fg placeholder:text-subtle transition-[border-color,box-shadow] focus:outline-none focus:ring-4 focus:ring-accent/25",
+    hasError ? "border-rose-ink/50" : "border-line focus:border-accent-strong"
   )
 
 export function TextField({
@@ -110,22 +111,27 @@ export function SelectField<T extends string>({
 }) {
   return (
     <FieldWrapper label={label} error={error} className={className}>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value as T | "")}
-        className={cn(inputClass(!!error), "appearance-none")}
-      >
-        <option value="">{placeholder}</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value as T | "")}
+          className={cn(inputClass(!!error), "appearance-none pr-10", !value && "text-subtle")}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted" />
+      </div>
     </FieldWrapper>
   )
 }
 
+/** Pill-style single choice. Selected pills invert to the primary
+ * colour, like a segmented control. */
 export function ChoiceGroup<T extends string>({
   label,
   value,
@@ -142,24 +148,31 @@ export function ChoiceGroup<T extends string>({
   className?: string
 }) {
   return (
-    <FieldWrapper label={label} error={error} className={className}>
-      <div className="flex flex-wrap gap-2">
-        {options.map((opt) => (
-          <button
-            key={opt}
-            type="button"
-            onClick={() => onChange(opt)}
-            className={cn(
-              "rounded-md border px-4 py-2 text-sm transition-colors",
-              value === opt
-                ? "border-terracotta bg-terracotta/15 text-terracotta-soft"
-                : "border-canvas-line text-mist hover:border-sand/30 hover:text-sand"
-            )}
-          >
-            {opt}
-          </button>
-        ))}
+    <div role="radiogroup" aria-label={label} className={cn("block", className)}>
+      <span className="label-micro">{label}</span>
+      <div className="mt-2.5 flex flex-wrap gap-2">
+        {options.map((opt) => {
+          const selected = value === opt
+          return (
+            <button
+              key={opt}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(opt)}
+              className={cn(
+                "h-10 rounded-full border px-4 text-sm transition-colors",
+                selected
+                  ? "border-transparent bg-primary text-on-primary"
+                  : "border-line bg-field text-fg hover:border-line-strong hover:bg-fg/[0.04]"
+              )}
+            >
+              {opt}
+            </button>
+          )
+        })}
       </div>
-    </FieldWrapper>
+      {error && <p className="mt-2 text-xs text-rose-ink">{error}</p>}
+    </div>
   )
 }

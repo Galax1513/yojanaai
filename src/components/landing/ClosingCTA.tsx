@@ -7,55 +7,40 @@ import closingImageMobile from "@/assets/images/closing-market-street-mobile.web
 
 export function ClosingCTA() {
   return (
-    <section className="relative overflow-hidden bg-canvas">
-      <picture>
-        <source media="(max-width: 640px)" srcSet={closingImageMobile} />
-        <img
-          src={closingImage}
-          alt="A quiet neighbourhood street in an Indian town, with local shops and homes under warm light."
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          loading="lazy"
-        />
-      </picture>
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(55% 85% at 50% 50%, rgba(21,19,15,0.65), rgba(21,19,15,0) 70%), linear-gradient(to bottom, rgba(21,19,15,0.45), rgba(21,19,15,0) 30%, rgba(21,19,15,0.55))",
-        }}
-      />
+    <section className="px-3 sm:px-5">
+      <div className="relative mx-auto max-w-[96rem] overflow-hidden rounded-[2rem] bg-night sm:rounded-[2.5rem]">
+        <picture>
+          <source media="(max-width: 640px)" srcSet={closingImageMobile} />
+          <img
+            src={closingImage}
+            alt="A quiet neighbourhood street in an Indian town, with local shops and homes under warm light."
+            className="absolute inset-0 h-full w-full object-cover object-center saturate-[0.78]"
+            loading="lazy"
+          />
+        </picture>
+        <div className="absolute inset-0 bg-gradient-to-t from-night/70 via-night/25 to-night/30" />
 
-      <div className="relative mx-auto flex min-h-[420px] max-w-3xl flex-col items-center justify-center px-5 py-24 text-center sm:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="text-balance font-display text-3xl font-normal leading-tight text-sand drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] sm:text-4xl"
-        >
-          Know what's available to you.
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.55, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-4 max-w-sm text-balance text-base leading-relaxed text-sand/85 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]"
-        >
-          One profile. A clearer path to the benefits that may be available.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.55, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8"
-        >
-          <Link to="/onboarding" className={buttonVariants({ variant: "accent", size: "lg" })}>
-            Find My Benefits
-            <ArrowRight className="size-4" />
-          </Link>
-        </motion.div>
+        <div className="relative flex min-h-[32rem] items-center justify-center px-5 py-20 sm:min-h-[36rem]">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="glass-photo flex max-w-lg flex-col items-center rounded-[2rem] px-7 py-10 text-center sm:px-12 sm:py-12"
+          >
+            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-cream/70">Takes a few minutes</p>
+            <h2 className="mt-4 text-balance text-4xl font-light leading-[1.05] text-cream sm:text-5xl">
+              Know what's available to you.
+            </h2>
+            <p className="mt-4 max-w-sm text-balance text-[15px] leading-relaxed text-cream/80">
+              One profile. A clearer path to the benefits you may be eligible for.
+            </p>
+            <Link to="/onboarding" className={buttonVariants({ variant: "accent", size: "lg", className: "mt-8" })}>
+              Find My Benefits
+              <ArrowRight />
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </section>
   )

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/AuthContext"
 import { ApiError } from "@/services/api/client"
 import type { ApiUser } from "@/types/api"
+import sideImage from "@/assets/images/closing-market-street-mobile.webp"
 
 type Mode = "login" | "signup"
 
@@ -59,19 +60,36 @@ export function LoginPage({ mode }: { mode: Mode }) {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen flex-col justify-center py-32">
-        <div className="mx-auto w-full max-w-md px-5 sm:px-8">
-          <h1 className="font-display text-2xl text-sand sm:text-3xl">
-            {isSignup ? "Create your account." : "Welcome back."}
-          </h1>
-          <p className="mt-2 text-sm text-mist">
-            {isSignup
-              ? "Save your details once and come back to your matches any time."
-              : "Sign in to see your saved profile and matches."}
-          </p>
+      <div className="flex min-h-screen flex-col justify-center px-3 pb-28 pt-28 sm:px-5 sm:pt-32 md:pb-16">
+        <GlassCard className="mx-auto grid w-full max-w-5xl overflow-hidden p-2 lg:grid-cols-2">
+          <div className="relative hidden min-h-[34rem] overflow-hidden rounded-[1.4rem] lg:block">
+            <img
+              src={sideImage}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover saturate-[0.78]"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-night/75 via-night/10 to-transparent" />
+            <div className="glass-photo absolute inset-x-5 bottom-5 rounded-3xl p-6">
+              <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-cream/70">Why an account</p>
+              <p className="mt-2 font-display text-2xl font-light leading-snug text-cream">
+                Save your details once and come back to your matches any time.
+              </p>
+            </div>
+          </div>
 
-          <GlassCard className="mt-8 p-6 sm:p-8">
-            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+          <div className="flex flex-col justify-center px-5 py-10 sm:px-12 sm:py-14">
+            <p className="label-micro text-accent-ink">{isSignup ? "Create account" : "Sign in"}</p>
+            <h1 className="mt-3 text-4xl font-light leading-[1.05] text-fg sm:text-5xl">
+              {isSignup ? "Create your account." : "Welcome back."}
+            </h1>
+            <p className="mt-3 text-sm text-muted">
+              {isSignup
+                ? "One account, one profile. Edit it whenever you like."
+                : "Sign in to see your saved profile and matches."}
+            </p>
+
+            <form onSubmit={handleSubmit} className="mt-9 space-y-5" noValidate>
               <TextField
                 label="Email"
                 type="email"
@@ -92,30 +110,30 @@ export function LoginPage({ mode }: { mode: Mode }) {
               />
 
               {submitError && (
-                <div className="flex items-start gap-2 rounded-md border border-rose/30 bg-rose/10 p-3 text-sm text-rose">
+                <div className="flex items-start gap-2 rounded-2xl bg-rose/15 p-4 text-sm text-rose-ink">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                   {submitError}
                 </div>
               )}
 
-              <Button type="submit" variant="accent" className="w-full gap-1.5" disabled={submitting}>
-                {submitting && <Loader2 className="size-3.5 animate-spin" />}
+              <Button type="submit" variant="primary" size="lg" className="w-full" disabled={submitting}>
+                {submitting && <Loader2 className="animate-spin" />}
                 {isSignup ? "Create account" : "Sign in"}
               </Button>
             </form>
 
-            <p className="mt-6 border-t border-canvas-line pt-6 text-center text-sm text-mist">
+            <p className="mt-8 text-center text-sm text-muted">
               {isSignup ? "Already have an account? " : "New to YojanaAI? "}
               <Link
                 to={isSignup ? "/login" : "/signup"}
                 state={location.state}
-                className="text-sand underline-offset-4 hover:underline"
+                className="font-medium text-fg underline decoration-line-strong underline-offset-4 hover:decoration-fg"
               >
                 {isSignup ? "Sign in" : "Create an account"}
               </Link>
             </p>
-          </GlassCard>
-        </div>
+          </div>
+        </GlassCard>
       </div>
     </PageTransition>
   )

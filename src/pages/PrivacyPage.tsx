@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom"
 import { LegalList, LegalPage, type LegalSection } from "@/components/legal/LegalPage"
 
-const LAST_UPDATED = "4 October 2026"
+const LAST_UPDATED = "12 October 2026"
 
-const linkClass = "text-sand underline decoration-sand/30 underline-offset-4 hover:decoration-sand"
-const strong = "font-medium text-sand"
+const linkClass = "text-fg underline decoration-line-strong underline-offset-4 hover:decoration-fg"
+const strong = "font-medium text-fg"
 
 const sections: LegalSection[] = [
   {
@@ -56,7 +56,8 @@ const sections: LegalSection[] = [
         </p>
         <p>
           <span className={strong}>Technical information.</span> To keep you signed in, your browser stores a
-          sign-in token in its local storage. The server keeps standard technical logs, such as the pages and
+          sign-in token in its local storage, along with your light or dark theme choice if you pick one; the
+          theme choice never leaves your device. The server keeps standard technical logs, such as the pages and
           API addresses requested and details of errors, to keep the service running and fix problems.
         </p>
         <p>

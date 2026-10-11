@@ -1,51 +1,58 @@
 import { Link } from "react-router-dom"
-import { ArrowRight, CalendarClock } from "lucide-react"
+import { ArrowUpRight, CalendarClock, MapPin } from "lucide-react"
 import type { ApiSchemeListItem } from "@/types/api"
-import { StatusBadge } from "@/components/common/StatusBadge"
 import { getCategoryLabel } from "@/data/categories"
+import { cleanSnippet } from "@/lib/utils"
 
 export function SchemeCard({ scheme }: { scheme: ApiSchemeListItem }) {
   const location = scheme.state ?? (scheme.level === "central" ? "All India" : null)
 
   return (
-    <div className="flex flex-col justify-between rounded-md border border-canvas-line p-6 transition-colors duration-200 hover:border-terracotta/40 hover:bg-canvas-raised">
-      <div>
-        <span className="text-xs font-medium uppercase tracking-wide text-mist">
-          {getCategoryLabel(scheme.category)}
-        </span>
-        <h3 className="mt-3 font-display text-xl text-sand">{scheme.name}</h3>
-        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-mist">{scheme.summary}</p>
-        <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-mist/80">
-          {scheme.eligibility_summary}
-        </p>
+    <Link
+      to={`/scheme/${scheme.slug}`}
+      className="glass group flex flex-col rounded-[1.75rem] p-6 transition-transform duration-300 ease-[var(--ease-soft)] hover:-translate-y-1"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="label-micro truncate">{getCategoryLabel(scheme.category)}</span>
+        {location && (
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-fg/[0.06] px-2.5 py-1 text-[11px] text-muted">
+            <MapPin className="size-3" />
+            {location}
+          </span>
+        )}
       </div>
 
-      <div className="mt-6 flex items-center justify-between border-t border-canvas-line pt-4">
-        <div>
-          <p className="line-clamp-1 text-sm font-medium text-terracotta-soft">{scheme.benefit}</p>
+      <h3 className="mt-5 line-clamp-2 text-xl font-medium leading-snug tracking-[-0.01em] text-fg">{cleanSnippet(scheme.name)}</h3>
+      <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-muted">{cleanSnippet(scheme.summary)}</p>
+      {scheme.eligibility_summary && (
+        <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-subtle">{cleanSnippet(scheme.eligibility_summary)}</p>
+      )}
+
+      <div className="flex-1" />
+      <div className="mt-6 flex items-end justify-between gap-4 border-t border-line pt-4">
+        <div className="min-w-0">
+          {scheme.benefit && (
+            <>
+              <p className="label-micro">Benefit</p>
+              <p className="mt-1 line-clamp-1 text-sm font-medium text-accent-ink">{cleanSnippet(scheme.benefit)}</p>
+            </>
+          )}
           {/* Only ever rendered when the database actually has a
               source-backed deadline — never fabricated. */}
           {scheme.deadline_label && (
-            <p className="mt-1 flex items-center gap-1.5 text-xs text-mist">
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted">
               <CalendarClock className="size-3.5" />
               {scheme.deadline_label}
             </p>
           )}
         </div>
-        {location && (
-          <StatusBadge tone="neutral" withIcon={false} className="shrink-0">
-            {location}
-          </StatusBadge>
-        )}
+        <span
+          aria-hidden="true"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-line-strong text-fg transition-colors duration-300 group-hover:border-transparent group-hover:bg-primary group-hover:text-on-primary"
+        >
+          <ArrowUpRight className="size-4" />
+        </span>
       </div>
-
-      <Link
-        to={`/scheme/${scheme.slug}`}
-        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-sand transition-colors hover:text-terracotta-soft"
-      >
-        View scheme
-        <ArrowRight className="size-3.5" />
-      </Link>
-    </div>
+    </Link>
   )
 }

@@ -305,7 +305,7 @@ export function OnboardingPage() {
     return (
       <PageTransition>
         <div className="flex min-h-screen items-center justify-center pt-20">
-          <Loader2 className="size-5 animate-spin text-mist" />
+          <Loader2 className="size-5 animate-spin text-muted" />
         </div>
       </PageTransition>
     )
@@ -314,8 +314,8 @@ export function OnboardingPage() {
   if (loadError) {
     return (
       <PageTransition>
-        <div className="min-h-screen pb-28 pt-40">
-          <div className="mx-auto max-w-3xl px-5 sm:px-8">
+        <div className="min-h-screen px-3 pb-16 pt-36 sm:px-5 sm:pt-40">
+          <div className="mx-auto max-w-3xl">
             <EmptyState
               icon={AlertTriangle}
               title="We couldn't load your profile"
@@ -410,7 +410,7 @@ export function OnboardingPage() {
     </div>,
 
     <div key="eligibility" className="space-y-6">
-      <p className="text-xs leading-relaxed text-mist">
+      <p className="rounded-2xl bg-fg/[0.04] p-4 text-sm leading-relaxed text-muted">
         These help us narrow down relevant schemes. If you're not sure, choose "Unknown" —
         that's different from "No" and won't be held against you.
       </p>
@@ -420,19 +420,19 @@ export function OnboardingPage() {
     </div>,
 
     <div key="review" className="space-y-6">
-      <p className="text-sm leading-relaxed text-mist">
+      <p className="text-sm leading-relaxed text-muted">
         Review your answers before continuing. You can go back to any step to make changes.
       </p>
-      <dl className="grid gap-x-6 gap-y-3 rounded-md border border-canvas-line p-4 sm:grid-cols-2">
+      <dl className="grid gap-x-6 gap-y-5 rounded-3xl bg-fg/[0.04] p-5 sm:grid-cols-2 sm:p-6">
         {reviewRows(form).map(([label, value]) => (
           <div key={label}>
-            <dt className="text-xs text-mist">{label}</dt>
-            <dd className="text-sm text-sand">{value}</dd>
+            <dt className="label-micro">{label}</dt>
+            <dd className="mt-1 text-[15px] text-fg">{value}</dd>
           </div>
         ))}
       </dl>
       {submitError && (
-        <div className="flex items-start gap-2 rounded-md border border-rose/30 bg-rose/10 p-3 text-sm text-rose">
+        <div className="flex items-start gap-2 rounded-2xl bg-rose/15 p-4 text-sm text-rose-ink">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" />
           {submitError}
         </div>
@@ -442,12 +442,12 @@ export function OnboardingPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen flex-col justify-center py-32">
-        <div className="mx-auto w-full max-w-2xl px-5 sm:px-8">
-          <p className="mb-2 text-xs font-medium text-mist">
-            {String(step + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
+      <div className="flex min-h-screen flex-col justify-center px-3 pb-28 pt-28 sm:px-5 sm:pt-32 md:pb-16">
+        <div className="mx-auto w-full max-w-2xl">
+          <p className="label-micro text-accent-ink">
+            Step {String(step + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
           </p>
-          <h1 className="font-display text-2xl text-sand sm:text-3xl">
+          <h1 className="mt-3 text-balance text-4xl font-light leading-[1.05] text-fg sm:text-5xl">
             {editingProfileId ? "Update your profile." : "Let's find what's available to you."}
           </h1>
 
@@ -464,25 +464,24 @@ export function OnboardingPage() {
                 exit={{ opacity: 0, x: -16 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                <h2 className="font-display text-2xl text-sand">{displaySteps[step]}</h2>
+                <h2 className="text-3xl font-normal text-fg">{displaySteps[step]}</h2>
                 <div className="mt-8">{stepContent[step]}</div>
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-10 flex items-center justify-between border-t border-canvas-line pt-6">
-              <Button variant="ghost" size="sm" disabled={step === 0 || submitting} onClick={goBack} className="gap-1.5">
-                <ArrowLeft className="size-3.5" />
-                Back
+            <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
+              <Button variant="outline" size="icon" disabled={step === 0 || submitting} onClick={goBack} aria-label="Previous step">
+                <ArrowLeft />
               </Button>
               {isReview ? (
-                <Button variant="accent" size="sm" onClick={handleSubmit} disabled={submitting} className="gap-1.5">
-                  {submitting && <Loader2 className="size-3.5 animate-spin" />}
+                <Button variant="primary" onClick={handleSubmit} disabled={submitting}>
+                  {submitting && <Loader2 className="animate-spin" />}
                   {submitting ? "Saving…" : editingProfileId ? "Save changes" : "Find My Benefits"}
                 </Button>
               ) : (
-                <Button variant="accent" size="sm" onClick={goNext} disabled={isLast} className="gap-1.5">
+                <Button variant="primary" onClick={goNext} disabled={isLast}>
                   Continue
-                  <ArrowRight className="size-3.5" />
+                  <ArrowRight />
                 </Button>
               )}
             </div>

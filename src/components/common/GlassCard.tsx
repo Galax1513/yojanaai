@@ -2,18 +2,16 @@ import { cn } from "@/lib/utils"
 import type { HTMLAttributes } from "react"
 
 interface GlassCardProps extends HTMLAttributes<HTMLDivElement> {
-  as?: "div"
-  tone?: "dark" | "light"
+  /** "strong" is denser, for panels that float over busy content. */
+  variant?: "default" | "strong"
 }
 
-export function GlassCard({ className, tone = "dark", children, ...props }: GlassCardProps) {
+export function GlassCard({ className, variant = "default", children, ...props }: GlassCardProps) {
   return (
     <div
       className={cn(
-        "rounded-lg border backdrop-blur-md",
-        tone === "dark"
-          ? "border-sand/10 bg-canvas-raised/70"
-          : "border-ink/10 bg-sand/80",
+        "rounded-[1.75rem]",
+        variant === "strong" ? "glass-strong" : "glass",
         className
       )}
       {...props}

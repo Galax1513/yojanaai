@@ -67,11 +67,11 @@ export function SupportCategorySelector({
   const selectedFacet = selected ? facetFor(selected.key) : undefined
 
   return (
-    <GlassCard className={cn("p-5 sm:p-6", className)}>
+    <GlassCard className={cn("p-5 sm:p-7", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="font-display text-xl text-sand">{title}</h2>
-          <p className="mt-1 text-sm text-mist">{description}</p>
+          <h2 className="text-2xl font-normal text-fg">{title}</h2>
+          <p className="mt-1.5 text-sm text-muted">{description}</p>
         </div>
         {selected && (
           <Button variant="ghost" size="sm" onClick={() => onChange(null, null)} className="gap-1.5">
@@ -81,7 +81,7 @@ export function SupportCategorySelector({
         )}
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-2 min-[420px]:grid-cols-2 lg:grid-cols-4">
+      <div className="no-scrollbar -mx-5 mt-5 flex gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         <CategoryOption
           label="All support"
           icon={LayoutGrid}
@@ -109,10 +109,8 @@ export function SupportCategorySelector({
       </div>
 
       {selected && selected.subcategories.length > 0 && (
-        <div className="mt-5 border-t border-canvas-line pt-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-mist">
-            Narrow within {selected.label}
-          </p>
+        <div className="mt-5 border-t border-line pt-5">
+          <p className="label-micro">Narrow within {selected.label}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <SubcategoryOption
               label={`All ${selected.label.toLowerCase()}`}
@@ -162,17 +160,26 @@ function CategoryOption({
       disabled={disabled}
       aria-pressed={selected}
       className={cn(
-        "flex items-center gap-3 rounded-md border px-3.5 py-3 text-left transition-colors",
+        "flex h-11 shrink-0 items-center gap-2 rounded-full border pl-2 pr-4 text-left text-sm transition-colors",
         selected
-          ? "border-terracotta bg-terracotta/10"
-          : "border-canvas-line hover:border-sand/30",
-        disabled && "cursor-not-allowed opacity-40 hover:border-canvas-line"
+          ? "border-transparent bg-primary text-on-primary"
+          : "border-line bg-field text-fg hover:border-line-strong hover:bg-fg/[0.04]",
+        disabled && "cursor-not-allowed opacity-40 hover:border-line hover:bg-field"
       )}
     >
-      <Icon className={cn("size-4 shrink-0", selected ? "text-terracotta-soft" : "text-mist")} />
-      <span className={cn("min-w-0 flex-1 text-sm", selected ? "text-sand" : "text-sand/90")}>{label}</span>
+      <span
+        className={cn(
+          "flex size-7 items-center justify-center rounded-full",
+          selected ? "bg-on-primary/15" : "bg-fg/[0.06]"
+        )}
+      >
+        <Icon className="size-3.5" strokeWidth={1.75} />
+      </span>
+      <span className="whitespace-nowrap">{label}</span>
       {count !== undefined && (
-        <span className="shrink-0 text-xs tabular-nums text-mist">{formatCount(count)}</span>
+        <span className={cn("text-xs tabular-nums", selected ? "text-on-primary/65" : "text-muted")}>
+          {formatCount(count)}
+        </span>
       )}
     </button>
   )
@@ -198,15 +205,15 @@ function SubcategoryOption({
       disabled={disabled}
       aria-pressed={selected}
       className={cn(
-        "inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors",
+        "inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-[13px] transition-colors",
         selected
-          ? "border-terracotta bg-terracotta/10 text-sand"
-          : "border-canvas-line text-sand/90 hover:border-sand/30",
-        disabled && "cursor-not-allowed opacity-40 hover:border-canvas-line"
+          ? "border-transparent bg-accent/45 text-fg dark:bg-accent/20"
+          : "border-line text-fg hover:border-line-strong hover:bg-fg/[0.04]",
+        disabled && "cursor-not-allowed opacity-40 hover:border-line hover:bg-transparent"
       )}
     >
       {label}
-      {count !== undefined && <span className="text-xs tabular-nums text-mist">{formatCount(count)}</span>}
+      {count !== undefined && <span className="text-xs tabular-nums text-muted">{formatCount(count)}</span>}
     </button>
   )
 }

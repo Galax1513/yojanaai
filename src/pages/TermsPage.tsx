@@ -3,7 +3,7 @@ import { LegalList, LegalPage, type LegalSection } from "@/components/legal/Lega
 
 const LAST_UPDATED = "4 October 2026"
 
-const linkClass = "text-sand underline decoration-sand/30 underline-offset-4 hover:decoration-sand"
+const linkClass = "text-fg underline decoration-line-strong underline-offset-4 hover:decoration-fg"
 
 const sections: LegalSection[] = [
   {

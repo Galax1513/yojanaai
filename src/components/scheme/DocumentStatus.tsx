@@ -14,11 +14,13 @@ interface DocumentInfo {
  */
 export function DocumentStatusRow({ document }: { document: DocumentInfo }) {
   return (
-    <div className="flex items-start gap-3 border-b border-canvas-line/60 py-3.5 last:border-none">
-      <FileText className="mt-0.5 size-4 shrink-0 text-mist" />
+    <div className="flex items-start gap-3.5 border-b border-line py-4 first:pt-0 last:border-none last:pb-0">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-fg/[0.06]">
+        <FileText className="size-4 text-muted" strokeWidth={1.75} />
+      </span>
       <div>
-        <p className="text-sm font-medium text-sand">{document.name}</p>
-        <p className="mt-0.5 text-xs text-mist">{document.reason}</p>
+        <p className="text-sm font-medium text-fg">{document.name}</p>
+        <p className="mt-0.5 text-xs leading-relaxed text-muted">{document.reason}</p>
       </div>
     </div>
   )
